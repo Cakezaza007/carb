@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>คำนวณคาร์โบไฮเดรต</title>
+    <style>
+        .highlight { color: green; font-weight: bold; }
+        .lose { color: red; }
+        .gain { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>คำนวณคาร์โบไฮเดรต</h1>
+    <form id="calculatorForm">
+        <label>อายุ: <input type="number" id="age"></label><br>
+        <label>ส่วนสูง (ซม.): <input type="number" id="height"></label><br>
+        <label>น้ำหนัก (กก.): <input type="number" id="weight"></label><br>
+        <label>กิจกรรม:
+            <select id="activity">
+                <option value="1.2">ไม่ออกกำลังกาย</option>
+                <option value="1.375">ออกกำลังกายน้อย</option>
+                <option value="1.55">ออกกำลังกายปานกลาง</option>
+                <option value="1.725">ออกกำลังกายหนัก</option>
+                <option value="1.9">ออกกำลังกายหนักมาก</option>
+            </select>
+        </label><br>
+        <button type="button" onclick="calculate()">คำนวณ</button>
+    </form>
+    <h2>ผลการคำนวณ</h2>
+    <table border="1">
+        <tr>
+            <th>จำนวนแคลอรี่</th>
+            <th>การดูแลสุขภาพ</th>
+            <th>จำนวนคาร์โบไฮเดรต (40% - 75%)</th>
+        </tr>
+        <tbody id="resultTable"></tbody>
+    </table>
+
+    <script>
+        function calculate() {
+            let age = document.getElementById('age').value;
+            let height = document.getElementById('height').value;
+            let weight = document.getElementById('weight').value;
+            let activity = document.getElementById('activity').value;
+            
+            let bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+            let tdee = bmr * activity;
+
+            let goals = [
+                { name: "รักษาน้ำหนัก", cal: tdee, class: "highlight" },
+                { name: "เพื่อลด 0.5 กก./สัปดาห์", cal: tdee - 500, class: "lose" },
+                { name: "เพื่อลด 1 กก./สัปดาห์", cal: tdee - 1000, class: "lose" },
+                { name: "เพื่อเพิ่ม 0.5 กก./สัปดาห์", cal: tdee + 500, class: "gain" },
+                { name: "เพื่อเพิ่ม 1 กก./สัปดาห์", cal: tdee + 1000, class: "gain" }
+            ];
+            
+            let resultTable = document.getElementById('resultTable');
+            resultTable.innerHTML = "";
+            
+            goals.forEach(goal => {
+                let carbMin = Math.round((goal.cal * 0.4) / 4);
+                let carbMax = Math.round((goal.cal * 0.75) / 4);
+                
+                let row = `<tr class='${goal.class}'>
+                    <td>${Math.round(goal.cal)}</td>
+                    <td>${goal.name}</td>
+                    <td>${carbMin} (40%) - ${carbMax} (75%) กรัม/วัน</td>
+                </tr>`;
+                
+                resultTable.innerHTML += row;
+            });
+        }
+    </script>
+</body>
+</html>
